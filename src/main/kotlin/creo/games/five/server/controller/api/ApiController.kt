@@ -7,5 +7,5 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
 class ApiController {
     @RequestMapping("")
-    fun main() : String = "main";
+    fun main(): String = "api";
 }
