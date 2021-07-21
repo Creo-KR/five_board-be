@@ -2,6 +2,6 @@
 
 Language : `Kotlin`
 
-Framework : `Spring Framework Boot`
+Framework : `Spring Boot`
 
 Dependencies : `Spring Security`
