@@ -47,6 +47,18 @@ class RestApiTests(@Autowired val restTemplate: TestRestTemplate) {
     }
 
     @Test
+    fun `Sign up`() {
+        val headers = HttpHeaders()
+        headers.contentType = MediaType.APPLICATION_JSON
+        val json = JSONObject()
+        json.put("name", "user1")
+        json.put("password", "ps1")
+        val body = json.toString()
+        val entity = restTemplate.postForEntity<String>("/user/signup", HttpEntity<String>(body, headers))
+        assertThat(entity.statusCode).isEqualTo(HttpStatus.OK)
+    }
+
+    @Test
     fun `Assert article page title, content and status code`() {
         println(">> TODO")
     }

@@ -1,5 +1,6 @@
 package creo.games.five.server.config
 
+import creo.games.five.server.service.UserService
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
@@ -13,7 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @EnableWebSecurity
-class WebSecurityConfig : WebSecurityConfigurerAdapter() {
+class WebSecurityConfig(
+    val userDetailsService: UserService
+) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
         http {
@@ -22,6 +25,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             authorizeRequests {
                 authorize(HttpMethod.GET, "/", permitAll)
                 authorize(HttpMethod.POST, "/user/login", permitAll)
+                authorize(HttpMethod.POST, "/user/signup", permitAll)
                 authorize(anyRequest, authenticated)
             }
 
@@ -32,7 +36,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.inMemoryAuthentication().withUser("user1").password(passwordEncoder().encode("ps1")).authorities("USER")
+        auth.userDetailsService(userDetailsService)
     }
 
     @Bean
