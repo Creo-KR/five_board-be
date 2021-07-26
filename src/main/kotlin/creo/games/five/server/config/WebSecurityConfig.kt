@@ -27,6 +27,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
                 authorize(HttpMethod.GET, "/", permitAll)
                 authorize(HttpMethod.POST, "/user/login", permitAll)
                 authorize(HttpMethod.POST, "/user/signup", permitAll)
+                authorize("/ws/**", permitAll)
                 authorize(anyRequest, authenticated)
             }
 

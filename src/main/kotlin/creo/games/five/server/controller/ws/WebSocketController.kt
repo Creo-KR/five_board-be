@@ -5,10 +5,9 @@ import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.stereotype.Controller
 
 @Controller
-@MessageMapping("/ws")
 class WebSocketController {
 
-    @MessageMapping("/")
+    @MessageMapping("/sendTo")
     @SendTo("/topic/connects")
     fun connect(body:String) : String {
         println(body)
