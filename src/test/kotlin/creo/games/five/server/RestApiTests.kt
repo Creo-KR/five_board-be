@@ -1,7 +1,6 @@
 package creo.games.five.server
 
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.util.Lists
 import org.json.JSONObject
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -16,11 +15,12 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RestApiTests(@Autowired val restTemplate: TestRestTemplate) {
+
+    private var session: String? = null
 
     @BeforeAll
     fun setup() {
@@ -35,15 +35,18 @@ class RestApiTests(@Autowired val restTemplate: TestRestTemplate) {
     }
 
     @Test
-    fun `login`() {
+    fun `Login`() {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
         val json = JSONObject()
         json.put("id", "user1")
-        json.put("pw", "ps1")
+        json.put("pw", "ps112312312")
         val body = json.toString()
         val entity = restTemplate.postForEntity<String>("/user/login", HttpEntity<String>(body, headers))
         assertThat(entity.statusCode).isEqualTo(HttpStatus.OK)
+
+        session = entity.headers.getFirst(HttpHeaders.SET_COOKIE)?.split(";")?.get(0);
+        println(session)
     }
 
     @Test
@@ -51,16 +54,42 @@ class RestApiTests(@Autowired val restTemplate: TestRestTemplate) {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
         val json = JSONObject()
-        json.put("name", "user1")
-        json.put("password", "ps1")
+        json.put("id", "user1")
+        json.put("nick", "NICK")
+        json.put("pw", "ps112312312")
         val body = json.toString()
         val entity = restTemplate.postForEntity<String>("/user/signup", HttpEntity<String>(body, headers))
         assertThat(entity.statusCode).isEqualTo(HttpStatus.OK)
     }
 
     @Test
-    fun `Assert article page title, content and status code`() {
-        println(">> TODO")
+    fun `Create a game room`() {
+        `Login`()
+
+        val headers = HttpHeaders()
+        headers[HttpHeaders.COOKIE] = session
+        headers.contentType = MediaType.APPLICATION_JSON
+        val json = JSONObject()
+
+        val body = json.toString()
+        val entity = restTemplate.postForEntity<String>("/api/game/create", HttpEntity<String>(body, headers))
+        assertThat(entity.statusCode).isEqualTo(HttpStatus.OK)
+    }
+
+    @Test
+    fun `Join the game room`() {
+        `Login`()
+
+        val roomSeq = 7
+
+        val headers = HttpHeaders()
+        headers[HttpHeaders.COOKIE] = session
+        headers.contentType = MediaType.APPLICATION_JSON
+        val json = JSONObject()
+
+        val body = json.toString()
+        val entity = restTemplate.postForEntity<String>("/api/game/join/${roomSeq}", HttpEntity<String>(body, headers))
+        assertThat(entity.statusCode).isEqualTo(HttpStatus.OK)
     }
 
     @AfterAll

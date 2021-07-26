@@ -1,9 +1,13 @@
 package creo.games.five.server.security
 
-class AuthenticationToken(
-    private val id: String?,
-    private val password: String?
-) {
+import creo.games.five.server.entity.User
+import java.util.*
 
+class AuthenticationToken(
+    principal: User,
+    var uuid: UUID? = principal.uuid,
+    var id: String? = principal.id,
+    var nick: String? = principal.nick
+) {
 
 }

@@ -1,5 +1,6 @@
 package creo.games.five.server.entity
 
+import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -8,25 +9,43 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
+@Table(
+    indexes = [Index(name = "IDX_user_id", columnList = "id")],
+    uniqueConstraints = [UniqueConstraint(name="UK_id_enabled", columnNames = ["id", "enabled"])]
+)
 data class User(
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(columnDefinition = "BINARY(16)")
-    private var id: UUID? = null,
-    private var name: String? = null,
-    private var password: String? = null
-) : UserDetails {
+    var uuid: UUID? = null,
 
+    @Column(nullable = false, length = 50)
+    var id: String? = null,
+
+    @Column(nullable = false, length = 72)
+    var pw: String? = null,
+
+    @Column(nullable = false, length = 12, unique = true)
+    var nick: String? = null,
+
+    @Column(nullable = false)
+    @CreationTimestamp
+    var regDate: Date? = null,
+
+    @Column(nullable = false)
+    var enabled: Boolean? = true,
+
+    ) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val authorities = ArrayList<GrantedAuthority>()
         authorities.add(SimpleGrantedAuthority("USER"));
         return authorities;
     }
 
-    override fun getPassword() = password
+    override fun getPassword() = pw;
 
-    override fun getUsername() = name
+    override fun getUsername() = id
 
     override fun isAccountNonExpired() = true
 
