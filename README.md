@@ -4,6 +4,6 @@ Language : `Kotlin`
 
 Framework : `Spring Boot`
 
-Dependencies : `Spring Security` `Spring JPA`
+Dependencies : `Spring Web` `Spring Security` `Spring JPA` `Spring WebSocket`
 
 Database : `MariaDB`
