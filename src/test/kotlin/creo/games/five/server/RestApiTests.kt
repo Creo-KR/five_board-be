@@ -72,7 +72,7 @@ class RestApiTests(@Autowired val restTemplate: TestRestTemplate) {
         val json = JSONObject()
 
         val body = json.toString()
-        val entity = restTemplate.postForEntity<String>("/api/game/create", HttpEntity<String>(body, headers))
+        var entity = restTemplate.postForEntity<String>("/api/game/create", HttpEntity<String>(body, headers))
         assertThat(entity.statusCode).isEqualTo(HttpStatus.OK)
     }
 

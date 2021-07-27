@@ -4,6 +4,7 @@ import creo.games.five.server.entity.Room
 import creo.games.five.server.entity.User
 import creo.games.five.server.repository.RoomRepository
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class GameService(
@@ -15,8 +16,8 @@ class GameService(
         return room
     }
 
-    fun joinRoom(roomSeq: Long, guest: User) {
-        var room = roomRepository.findById(roomSeq).get()
+    fun joinRoom(uuid: UUID, guest: User) {
+        var room = roomRepository.findById(uuid).get()
         room.guest = guest
         roomRepository.save(room)
     }

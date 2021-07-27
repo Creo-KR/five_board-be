@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface RoomRepository : CrudRepository<Room, Long> {
+interface RoomRepository : CrudRepository<Room, UUID> {
     fun findLatestByHost(host: User): Room
 }

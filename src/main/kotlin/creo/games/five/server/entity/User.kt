@@ -2,6 +2,7 @@ package creo.games.five.server.entity
 
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.GenericGenerator
+import org.hibernate.annotations.Parameter
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -11,12 +12,20 @@ import javax.persistence.*
 @Entity
 @Table(
     indexes = [Index(name = "IDX_user_id", columnList = "id")],
-    uniqueConstraints = [UniqueConstraint(name="UK_id_enabled", columnNames = ["id", "enabled"])]
+    uniqueConstraints = [UniqueConstraint(name = "UK_id_enabled", columnNames = ["id", "enabled"])]
 )
 data class User(
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(
+        name = "UUID", strategy = "org.hibernate.id.UUIDGenerator",
+        parameters = [
+            Parameter(
+                name = "uuid_gen_strategy_class",
+                value = "org.hibernate.id.uuid.CustomVersionOneStrategy"
+            )
+        ]
+    )
     @Column(columnDefinition = "BINARY(16)")
     var uuid: UUID? = null,
 
