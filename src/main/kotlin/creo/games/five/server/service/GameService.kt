@@ -22,4 +22,8 @@ class GameService(
         roomRepository.save(room)
     }
 
+    fun startGame(room: Room) {
+
+    }
+
 }
