@@ -5,6 +5,7 @@ import java.util.*
 
 class AuthenticationToken(
     principal: User,
+    var token:String,
     var uuid: UUID? = principal.uuid,
     var id: String? = principal.id,
     var nick: String? = principal.nick

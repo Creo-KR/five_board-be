@@ -2,6 +2,7 @@ package creo.games.five.server.controller
 
 import creo.games.five.server.entity.User
 import creo.games.five.server.security.AuthenticationToken
+import creo.games.five.server.security.JwtProvider
 import creo.games.five.server.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpSession
 
 @RestController
 @RequestMapping("/user")
-class UserController(private val service: UserService) {
+class UserController(private val service: UserService, private val jwtProvider: JwtProvider) {
 
     @PostMapping("/login")
     fun login(@RequestBody params: Map<String, String>, session: HttpSession): ResponseEntity<AuthenticationToken> {
@@ -28,7 +29,9 @@ class UserController(private val service: UserService) {
         context.authentication = authentication
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context)
 
-        return ResponseEntity.ok(AuthenticationToken(authentication.principal as User));
+        val token = jwtProvider.generateJwtToken(authentication)
+
+        return ResponseEntity.ok(AuthenticationToken(authentication.principal as User, token));
     }
 
     @PostMapping("/signup")
