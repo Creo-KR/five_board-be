@@ -26,8 +26,8 @@ class UserController(private val service: UserService, private val jwtProvider: 
         val pw = params["pw"];
 
         val authentication = service.login(id, pw)
-        context.authentication = authentication
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context)
+        //context.authentication = authentication
+        //session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context)
 
         val token = jwtProvider.generateJwtToken(authentication)
 

@@ -1,6 +1,9 @@
 package creo.games.five.server.security
 
 import creo.games.five.server.service.UserService
+import org.aspectj.util.LangUtil
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -13,15 +16,16 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Component
-class JwtTokenFilter constructor( 
+class JwtTokenFilter constructor(
     private val jwtProvider: JwtProvider,
-    private val userService: UserService
+    @Lazy private val userService: UserService
 ) : OncePerRequestFilter() {
+
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
 
         val header = request.getHeader(HttpHeaders.AUTHORIZATION)
-        if (header.isEmpty() || !header.startsWith("Bearer ")) {
+        if (LangUtil.isEmpty(header) || !header.startsWith("Bearer ")) {
             chain.doFilter(request, response)
             return
         }

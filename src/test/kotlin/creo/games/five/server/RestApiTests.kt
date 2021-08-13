@@ -1,5 +1,7 @@
 package creo.games.five.server
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import creo.games.five.server.security.AuthenticationToken
 import org.assertj.core.api.Assertions.assertThat
 import org.json.JSONObject
 import org.junit.jupiter.api.AfterAll
@@ -21,6 +23,7 @@ import org.springframework.http.MediaType
 class RestApiTests(@Autowired val restTemplate: TestRestTemplate) {
 
     private var session: String? = null
+    private var authToken: String? = null
 
     @BeforeAll
     fun setup() {
@@ -47,6 +50,13 @@ class RestApiTests(@Autowired val restTemplate: TestRestTemplate) {
 
         session = entity.headers.getFirst(HttpHeaders.SET_COOKIE)?.split(";")?.get(0);
         println(session)
+
+        val responseBody = entity.body
+
+        val mapper = ObjectMapper()
+        val responseJson = mapper.readValue(responseBody, AuthenticationToken::class.java)
+        println(responseJson.token)
+        authToken = responseJson.token
     }
 
     @Test
@@ -69,6 +79,7 @@ class RestApiTests(@Autowired val restTemplate: TestRestTemplate) {
         val headers = HttpHeaders()
         headers[HttpHeaders.COOKIE] = session
         headers.contentType = MediaType.APPLICATION_JSON
+        headers[HttpHeaders.AUTHORIZATION] = "Bearer ${authToken}"
         val json = JSONObject()
 
         val body = json.toString()

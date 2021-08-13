@@ -18,6 +18,7 @@ class JwtProvider {
         val expiration = Date(now.time + jwtExpirationMs)
 
         return Jwts.builder()
+            .setHeaderParam("typ","JWT")
             .setSubject(id)
             .setIssuedAt(now)
             .setExpiration(expiration)
@@ -31,7 +32,7 @@ class JwtProvider {
     fun validateJwtToken(token: String): Boolean {
         try {
             Jwts.parser().setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
+                .parseClaimsJwt(token)
             return true
         } catch (e: SignatureException) {
             //logger.error("Invalid JWT signature: {}", e.message);
@@ -40,6 +41,7 @@ class JwtProvider {
         } catch (e: ExpiredJwtException) {
             //logger.error("JWT token is expired: {}", e.message);
         } catch (e: UnsupportedJwtException) {
+            e.printStackTrace()
             //logger.error("JWT token is unsupported: {}", e.message);
         } catch (e: IllegalArgumentException) {
             //logger.error("JWT claims string is empty: {}", e.message);

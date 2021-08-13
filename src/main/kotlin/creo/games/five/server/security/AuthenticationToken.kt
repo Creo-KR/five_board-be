@@ -4,11 +4,16 @@ import creo.games.five.server.entity.User
 import java.util.*
 
 class AuthenticationToken(
-    principal: User,
-    var token:String,
-    var uuid: UUID? = principal.uuid,
-    var id: String? = principal.id,
-    var nick: String? = principal.nick
+    var token: String? = null,
+    var uuid: UUID? = null,
+    var id: String? = null,
+    var nick: String? = null
 ) {
+    constructor(principal: User, token: String) : this() {
+        uuid = principal.uuid
+        id = principal.id
+        nick = principal.nick
+        this.token = token
+    }
 
 }
